@@ -1,0 +1,28 @@
+// Impossible-travel detection for M365 / Entra ID sign-ins.
+// Detects two successful authentications by the same identity from countries
+// that cannot be reached within the elapsed time at commercial-flight speed
+// (~900 km/h). Tunable threshold filters out neighbouring-country false positives.
+let TimeWindow = 12h;
+let MaxSpeedKmH = 900.0;
+SigninLogs
+| where TimeGenerated > ago(TimeWindow)
+| where ResultType == 0
+| where isnotempty(LocationDetails.countryOrRegion)
+| extend Country = tostring(LocationDetails.countryOrRegion),
+         City    = tostring(LocationDetails.city),
+         Lat     = todouble(LocationDetails.geoCoordinates.latitude),
+         Lon     = todouble(LocationDetails.geoCoordinates.longitude)
+| sort by UserPrincipalName asc, TimeGenerated asc
+| extend PrevTime = prev(TimeGenerated, 1),
+         PrevUser = prev(UserPrincipalName, 1),
+         PrevLat  = prev(Lat, 1),
+         PrevLon  = prev(Lon, 1),
+         PrevCountry = prev(Country, 1)
+| where UserPrincipalName == PrevUser and Country != PrevCountry
+| extend DistanceKm = geo_distance_2points(Lon, Lat, PrevLon, PrevLat) / 1000.0
+| extend HoursDelta = (datetime_diff('second', TimeGenerated, PrevTime)) / 3600.0
+| where HoursDelta > 0
+| extend RequiredSpeed = DistanceKm / HoursDelta
+| where RequiredSpeed > MaxSpeedKmH
+| project TimeGenerated, UserPrincipalName, PrevCountry, Country, DistanceKm, HoursDelta, RequiredSpeed, IPAddress
+| order by RequiredSpeed desc

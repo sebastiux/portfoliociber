@@ -1,0 +1,70 @@
+{
+  "nav": {
+    "research": "Research",
+    "detections": "Detections",
+    "scanner": "Live Scanner",
+    "feed": "Feed",
+    "about": "About"
+  },
+  "home": {
+    "tagline": "Threat Research & Security Automation",
+    "intro": "Open-source detection engineering, malware triage, and security automation. Browse the rule library or test files against YARA rules in your browser.",
+    "ctaScanner": "Try Live Scanner",
+    "ctaDetections": "Detection Library",
+    "ctaResearch": "View Research",
+    "languages": "Languages",
+    "stack": "Stack"
+  },
+  "scanner": {
+    "title": "Live Scanner",
+    "subtitle": "Compile YARA rules and scan files in-memory, or enrich IOCs against public threat intelligence sources.",
+    "tabFile": "File scan",
+    "tabIoc": "IOC enrichment",
+    "rateLimit": "Rate limited to 10 scans per IP per hour.",
+    "privacy": "Files are processed in memory only and discarded after the response is returned. No file contents, hashes, or IPs are logged.",
+    "uploadLabel": "Upload a file (max 10 MB)",
+    "uploadHint": "Drop a binary, document, or script to test against the rule below.",
+    "ruleLabel": "YARA rule source",
+    "ruleHint": "Paste or modify a rule. Validated with yara-x.",
+    "presetLabel": "Preset",
+    "presetCustom": "Custom",
+    "scanButton": "Scan",
+    "scanning": "Scanning…",
+    "results": "Results",
+    "noMatches": "No rules matched the supplied data.",
+    "matchedRules": "Matched rules",
+    "duration": "Duration",
+    "fileSize": "File size",
+    "sha256": "SHA-256",
+    "compileErrors": "Compile errors",
+    "iocLabel": "Paste IOCs (one per line). Auto-detect supports IPv4, domains, URLs, MD5/SHA1/SHA256.",
+    "iocPlaceholder": "94.142.241.111\\nbazaar.abuse.ch\\n44d88612fea8a8f36de82e1278abb02f",
+    "enrichButton": "Enrich",
+    "enriching": "Enriching…",
+    "sources": "Sources",
+    "verdict": "Verdict",
+    "lastSeen": "Last seen",
+    "noIocs": "No valid IOCs detected in input."
+  },
+  "detections": {
+    "title": "Detection Library",
+    "subtitle": "YARA rules and KQL queries mapped to MITRE ATT&CK. Copy, fork, or test against the live scanner.",
+    "tabYara": "YARA",
+    "tabKql": "KQL",
+    "testRule": "Test this rule",
+    "severity": {
+      "info": "info",
+      "low": "low",
+      "medium": "medium",
+      "high": "high",
+      "critical": "critical"
+    },
+    "techniques": "ATT&CK"
+  },
+  "common": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "loading": "Loading…",
+    "error": "Error"
+  }
+}

@@ -1,0 +1,25 @@
+// OAuth consent-phishing detection.
+// Surfaces user-grants to non-Microsoft third-party applications that request
+// high-impact scopes (Mail.Read, Files.ReadWrite.All, offline_access). Typical
+// pattern for illicit-consent attacks against Microsoft 365.
+let HighRiskScopes = dynamic([
+    "Mail.Read", "Mail.ReadWrite", "Mail.Send", "Mail.ReadWrite.All",
+    "Files.ReadWrite", "Files.ReadWrite.All",
+    "User.ReadWrite.All", "Directory.ReadWrite.All",
+    "offline_access"
+]);
+AuditLogs
+| where TimeGenerated > ago(7d)
+| where OperationName == "Consent to application"
+| extend Target = tostring(TargetResources[0].displayName),
+         AppId  = tostring(TargetResources[0].id),
+         Actor  = tostring(InitiatedBy.user.userPrincipalName)
+| mv-expand ModifiedProps = TargetResources[0].modifiedProperties
+| extend NewValueRaw = tostring(ModifiedProps.newValue)
+| where ModifiedProps.displayName == "ConsentAction.Permissions"
+| extend Scopes = extract_all(@"Scope:\s*([A-Za-z\.]+)", NewValueRaw)
+| mv-expand Scope = Scopes to typeof(string)
+| where Scope in (HighRiskScopes)
+| summarize GrantedScopes = make_set(Scope) by TimeGenerated, Actor, Target, AppId
+| where array_length(GrantedScopes) >= 2
+| order by TimeGenerated desc

@@ -1,0 +1,36 @@
+// Service-principal anomaly detection in Entra ID.
+// Surfaces newly-created service principals that immediately receive admin
+// roles or high-privilege app permissions — classic backdoor pattern after
+// admin account takeover (T1098.003, T1136.003).
+let LookBack       = 14d;
+let PrivilegedRoles = dynamic([
+    "Global Administrator",
+    "Privileged Role Administrator",
+    "Application Administrator",
+    "Cloud Application Administrator",
+    "Authentication Administrator"
+]);
+let Created =
+    AuditLogs
+    | where TimeGenerated > ago(LookBack)
+    | where OperationName == "Add service principal"
+    | extend SpId        = tostring(TargetResources[0].id),
+             SpName      = tostring(TargetResources[0].displayName),
+             CreatedBy   = tostring(InitiatedBy.user.userPrincipalName),
+             CreatedTime = TimeGenerated
+    | project SpId, SpName, CreatedBy, CreatedTime;
+let RoleGrants =
+    AuditLogs
+    | where TimeGenerated > ago(LookBack)
+    | where OperationName == "Add member to role"
+    | extend SpId        = tostring(TargetResources[0].id),
+             RoleName    = tostring(TargetResources[0].modifiedProperties[1].newValue),
+             GrantTime   = TimeGenerated
+    | where RoleName has_any (PrivilegedRoles)
+    | project SpId, RoleName, GrantTime;
+Created
+| join kind=inner RoleGrants on SpId
+| extend MinutesToGrant = datetime_diff('minute', GrantTime, CreatedTime)
+| where MinutesToGrant between (0 .. 60)
+| project CreatedTime, GrantTime, MinutesToGrant, SpName, SpId, CreatedBy, RoleName
+| order by CreatedTime desc

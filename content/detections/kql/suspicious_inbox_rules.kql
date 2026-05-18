@@ -1,0 +1,21 @@
+// Suspicious inbox-rule creation in Exchange Online.
+// Detects auto-forwarding or "hide and delete" rules — classic BEC persistence
+// after credential compromise (T1564.008, T1114.003).
+let SuspiciousRuleNames = dynamic([".", " ", "..", "...", "a", "z", "rule"]);
+let SuspiciousFolders   = dynamic(["RSS Feeds", "RSS Subscriptions", "Conversation History", "Deleted Items", "Junk Email", "Notes"]);
+CloudAppEvents
+| where TimeGenerated > ago(7d)
+| where ActionType in ("New-InboxRule", "Set-InboxRule", "UpdateInboxRules")
+| extend Params = parse_json(RawEventData).Parameters
+| extend
+    RuleName    = tostring(parse_json(RawEventData).Parameters[0].Value),
+    MoveTo      = extract(@"MoveToFolder['"":\s]+([^""',]+)", 1, RawEventData),
+    DeleteMsg   = extract(@"DeleteMessage['"":\s]+([Tt]rue)", 1, RawEventData),
+    Forward     = extract(@"(?:ForwardTo|ForwardAsAttachmentTo|RedirectTo)['"":\s]+([^""',]+)", 1, RawEventData),
+    Actor       = AccountObjectId,
+    UPN         = AccountUpn
+| where isnotempty(Forward)
+    or (isnotempty(MoveTo) and MoveTo in (SuspiciousFolders) and isnotempty(DeleteMsg))
+    or RuleName in (SuspiciousRuleNames)
+| project TimeGenerated, UPN, ActionType, RuleName, MoveTo, DeleteMsg, Forward, IPAddress
+| order by TimeGenerated desc
