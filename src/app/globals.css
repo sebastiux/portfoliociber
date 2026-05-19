@@ -57,3 +57,56 @@ pre,
 code {
   font-family: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
 }
+
+@keyframes hp-shake {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(-3px, 2px); }
+  30% { transform: translate(3px, -2px); }
+  45% { transform: translate(-2px, -3px); }
+  60% { transform: translate(2px, 3px); }
+  75% { transform: translate(-3px, 1px); }
+  90% { transform: translate(3px, -1px); }
+}
+
+@keyframes hp-rgb {
+  0%, 100% { text-shadow: none; }
+  25% { text-shadow: 2px 0 #ff007a, -2px 0 #00e1ff; }
+  50% { text-shadow: -2px 0 #ff007a, 2px 0 #00e1ff; }
+  75% { text-shadow: 0 2px #ff007a, 0 -2px #00e1ff; }
+}
+
+.hp-glitch {
+  animation: hp-shake 0.18s linear infinite;
+}
+
+.hp-glitch * {
+  animation: hp-rgb 0.22s steps(2, end) infinite;
+}
+
+.hp-scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.25) 0,
+    rgba(0, 0, 0, 0.25) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: multiply;
+}
+
+.hp-cursor {
+  display: inline-block;
+  width: 0.55ch;
+  background: var(--accent);
+  color: var(--accent);
+  animation: hp-cursor-blink 0.8s steps(2, end) infinite;
+}
+
+@keyframes hp-cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}

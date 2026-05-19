@@ -5,6 +5,7 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -39,9 +40,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider>
           <SiteHeader />
           <main className="flex-1 mx-auto w-full max-w-6xl px-6 py-10">{children}</main>
-          <footer className="border-t border-[color:var(--border)] py-6 text-center text-xs text-[color:var(--muted)]">
-            built with next.js · yara-x · railway · no analytics
-          </footer>
+          <SiteFooter />
         </NextIntlClientProvider>
       </body>
     </html>
