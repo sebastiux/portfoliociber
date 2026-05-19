@@ -160,6 +160,34 @@ const REGISTRY: Detection[] = [
     references: [],
     filename: "kql/service_principal_anomaly.kql",
   },
+  {
+    id: "kql-encoded-powershell-execution",
+    slug: "encoded-powershell-execution",
+    type: "kql",
+    name: "Encoded PowerShell execution",
+    description: {
+      en: "Detects PowerShell invocations with -EncodedCommand, long base64 blobs, or DownloadString/IEX patterns. Catches the bulk of living-off-the-land droppers delivered via LNK, macro, or HTA.",
+      ru: "Обнаруживает запуски PowerShell с -EncodedCommand, длинными base64-блоками или связкой DownloadString/IEX. Покрывает большинство LotL-дропперов, доставляемых через LNK, макросы и HTA.",
+    },
+    severity: "high",
+    mitreTechniques: ["T1059.001", "T1027", "T1140"],
+    references: [],
+    filename: "kql/encoded_powershell_execution.kql",
+  },
+  {
+    id: "kql-mailbox-export-anomaly",
+    slug: "mailbox-export-anomaly",
+    type: "kql",
+    name: "Mailbox export volume anomaly",
+    description: {
+      en: "Flags Exchange Online mailbox-export or compliance-search actions running at 4× the per-actor 7-day baseline — typical staging step for BEC data theft or insider exfiltration.",
+      ru: "Отмечает операции экспорта почтовых ящиков и compliance-search в Exchange Online, превышающие 7-дневную базовую линию пользователя в 4 раза, — типичная подготовка к BEC-краже данных или инсайдерскому выводу.",
+    },
+    severity: "high",
+    mitreTechniques: ["T1114.002", "T1567"],
+    references: [],
+    filename: "kql/mailbox_export_anomaly.kql",
+  },
 ];
 
 export function listDetections(type?: DetectionType): Detection[] {

@@ -1,0 +1,28 @@
+// Encoded PowerShell execution on endpoints.
+// Detects -EncodedCommand / -enc invocations and base64 blobs over a length
+// threshold. Catches the bulk of "living off the land" PowerShell payloads
+// delivered via LNK, macro, or .hta droppers (MITRE T1059.001, T1027).
+let MinEncodedLength = 1500;
+DeviceProcessEvents
+| where TimeGenerated > ago(7d)
+| where FileName in~ ("powershell.exe", "pwsh.exe", "powershell_ise.exe")
+| extend Cmd = tolower(ProcessCommandLine)
+| where Cmd matches regex @"-e(nc|ncoded(command)?)\b"
+    or Cmd has "frombase64string"
+    or Cmd has "downloadstring"
+    or Cmd has "iex(" or Cmd has "invoke-expression"
+| extend B64Blob = extract(@"([A-Za-z0-9+/=]{200,})", 1, ProcessCommandLine)
+| extend BlobLen = strlen(B64Blob)
+| where BlobLen >= MinEncodedLength
+    or Cmd has "-w hidden"
+    or Cmd has "-noprofile"
+| project
+    TimeGenerated,
+    DeviceName,
+    AccountName,
+    InitiatingProcessFileName,
+    FileName,
+    BlobLen,
+    ProcessCommandLine,
+    SHA256
+| sort by BlobLen desc nulls last, TimeGenerated desc

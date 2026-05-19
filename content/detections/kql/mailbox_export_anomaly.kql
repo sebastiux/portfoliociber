@@ -1,0 +1,39 @@
+// Anomalous mailbox export volume in Exchange Online.
+// Detects New-MailboxExportRequest or Search-Mailbox operations targeting
+// volumes above the per-actor 7-day baseline — typical staging for BEC data
+// theft or insider exfiltration (MITRE T1114.002, T1567).
+let LookBack = 30d;
+let BaselineWindow = 7d;
+let Today = 1d;
+let MinDeviationFactor = 4.0;
+let Activity =
+    CloudAppEvents
+    | where TimeGenerated > ago(LookBack)
+    | where ActionType in (
+        "New-MailboxExportRequest",
+        "Search-Mailbox",
+        "New-ComplianceSearchAction",
+        "Set-MailboxExportRequest"
+    )
+    | extend Actor = AccountUpn, Target = tostring(parse_json(RawEventData).Parameters[0].Value)
+    | project TimeGenerated, Actor, ActionType, Target, IPAddress, RawEventData;
+let Baseline =
+    Activity
+    | where TimeGenerated between (ago(LookBack) .. ago(Today))
+    | summarize BaselineCount = count() by Actor, bin(TimeGenerated, BaselineWindow)
+    | summarize BaselineAvg = avg(BaselineCount), BaselineStd = stdev(BaselineCount) by Actor;
+let Recent =
+    Activity
+    | where TimeGenerated > ago(Today)
+    | summarize TodayCount = count(),
+                TargetSample = make_set(Target, 8),
+                Sources = make_set(IPAddress, 5),
+                FirstSeen = min(TimeGenerated),
+                LastSeen  = max(TimeGenerated)
+        by Actor;
+Recent
+| join kind=leftouter Baseline on Actor
+| extend Threshold = max_of(3.0, coalesce(BaselineAvg, 0.0) * MinDeviationFactor)
+| where TodayCount > Threshold
+| project FirstSeen, LastSeen, Actor, TodayCount, BaselineAvg, Threshold, TargetSample, Sources
+| order by TodayCount desc
