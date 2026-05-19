@@ -32,6 +32,8 @@ export default async function ScannerPage({ searchParams }: Props) {
     compileErrors: t("compileErrors"),
     rateLimit: t("rateLimit"),
     privacy: t("privacy"),
+    offsetLabel: t("offsetLabel"),
+    lengthLabel: t("lengthLabel"),
   };
 
   const iocLabels = {
@@ -42,6 +44,9 @@ export default async function ScannerPage({ searchParams }: Props) {
     sources: t("sources"),
     verdict: t("verdict"),
     noIocs: t("noIocs"),
+    iocColumn: t("iocColumn"),
+    typeColumn: t("typeColumn"),
+    scoreLabel: t("scoreLabel"),
   };
 
   return (

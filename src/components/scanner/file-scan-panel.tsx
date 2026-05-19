@@ -44,6 +44,8 @@ type Props = {
     compileErrors: string;
     rateLimit: string;
     privacy: string;
+    offsetLabel: string;
+    lengthLabel: string;
   };
   initialRuleSlug?: string;
 };
@@ -249,9 +251,12 @@ function ScanRender({ response, labels }: { response: ScanResponse; labels: Prop
                     <li key={i} className="flex flex-wrap gap-x-3 text-[color:var(--muted)]">
                       <span className="text-[color:var(--low)]">{md.identifier}</span>
                       <span>
-                        @ <span className="text-[color:var(--foreground)]">0x{md.offset.toString(16)}</span>
+                        {labels.offsetLabel}{" "}
+                        <span className="text-[color:var(--foreground)]">0x{md.offset.toString(16)}</span>
                       </span>
-                      <span>len {md.length}</span>
+                      <span>
+                        {labels.lengthLabel} {md.length}
+                      </span>
                       <span className="text-[color:var(--foreground)]">{hexPreview(md.data)}</span>
                     </li>
                   ))}

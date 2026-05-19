@@ -27,6 +27,9 @@ type Props = {
     sources: string;
     verdict: string;
     noIocs: string;
+    iocColumn: string;
+    typeColumn: string;
+    scoreLabel: string;
   };
 };
 
@@ -96,8 +99,8 @@ export function IocPanel({ labels }: Props) {
           <table className="w-full text-left text-xs">
             <thead className="bg-[color:var(--panel)] font-mono text-[10px] uppercase tracking-wider text-[color:var(--muted)]">
               <tr>
-                <th className="px-3 py-2">IOC</th>
-                <th className="px-3 py-2">type</th>
+                <th className="px-3 py-2">{labels.iocColumn}</th>
+                <th className="px-3 py-2">{labels.typeColumn}</th>
                 <th className="px-3 py-2">{labels.verdict}</th>
                 <th className="px-3 py-2">{labels.sources}</th>
               </tr>
@@ -128,7 +131,9 @@ export function IocPanel({ labels }: Props) {
                             {s.verdict}
                           </span>
                           {typeof s.score === "number" && (
-                            <span className="font-mono text-[10px] text-[color:var(--muted)]">score {s.score}</span>
+                            <span className="font-mono text-[10px] text-[color:var(--muted)]">
+                              {labels.scoreLabel} {s.score}
+                            </span>
                           )}
                           {s.notes && (
                             <span className="text-[11px] text-[color:var(--muted)]">{s.notes}</span>

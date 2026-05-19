@@ -45,7 +45,12 @@
     "sources": "Sources",
     "verdict": "Verdict",
     "lastSeen": "Last seen",
-    "noIocs": "No valid IOCs detected in input."
+    "noIocs": "No valid IOCs detected in input.",
+    "iocColumn": "IOC",
+    "typeColumn": "type",
+    "scoreLabel": "score",
+    "offsetLabel": "offset",
+    "lengthLabel": "len"
   },
   "detections": {
     "title": "Detection Library",
@@ -66,7 +71,16 @@
     "copy": "Copy",
     "copied": "Copied",
     "loading": "Loading…",
-    "error": "Error"
+    "error": "Error",
+    "close": "Close"
+  },
+  "meta": {
+    "title": "Portfolio · Carlos Ortega — Mechatronics & Cyber-Physical Systems Engineer",
+    "description": "Threat research, detection engineering, and a live YARA scanner. Carlos Ortega, Mechatronics & Cyber-Physical Systems engineer."
+  },
+  "footer": {
+    "builtWith": "built with",
+    "noAnalytics": "no analytics"
   },
   "joke": {
     "footerPrompt": "Special offer:",

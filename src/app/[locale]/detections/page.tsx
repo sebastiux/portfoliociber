@@ -1,4 +1,4 @@
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { DetectionCard } from "@/components/detection-card";
 import { DetectionSource } from "@/components/detection-source";
 import { DetectionsTabs } from "@/components/detections-tabs";
@@ -6,10 +6,16 @@ import { listDetections, loadSource, type Detection } from "@/lib/detections";
 
 export const dynamic = "force-static";
 
-export default async function DetectionsPage() {
-  const locale = (await getLocale()) as "en" | "ru";
-  const t = await getTranslations("detections");
-  const tc = await getTranslations("common");
+export default async function DetectionsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale: rawLocale } = await params;
+  const locale = rawLocale === "ru" ? "ru" : "en";
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "detections" });
+  const tc = await getTranslations({ locale, namespace: "common" });
 
   const yaraList = listDetections("yara");
   const kqlList = listDetections("kql");

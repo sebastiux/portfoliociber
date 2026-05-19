@@ -1,10 +1,16 @@
-import { getLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import { MermaidDiagram } from "@/components/mermaid-diagram";
 
 export const dynamic = "force-static";
 
-export default async function DesignPage() {
-  const locale = (await getLocale()) as "en" | "ru";
+export default async function DesignPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale: rawLocale } = await params;
+  const locale = rawLocale === "ru" ? "ru" : "en";
+  setRequestLocale(locale);
   const t = locale === "ru" ? RU : EN;
 
   return (

@@ -12,9 +12,18 @@ type Props = {
   modalTitle: string;
   lines: string[];
   closeLabel: string;
+  closeAriaLabel?: string;
 };
 
-export function HoneypotLink({ prompt, label, hoverHint, modalTitle, lines, closeLabel }: Props) {
+export function HoneypotLink({
+  prompt,
+  label,
+  hoverHint,
+  modalTitle,
+  lines,
+  closeLabel,
+  closeAriaLabel,
+}: Props) {
   const [open, setOpen] = useState(false);
   const [glitch, setGlitch] = useState(false);
   const [visibleLines, setVisibleLines] = useState(0);
@@ -110,7 +119,7 @@ export function HoneypotLink({ prompt, label, hoverHint, modalTitle, lines, clos
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                aria-label="close"
+                aria-label={closeAriaLabel ?? closeLabel}
                 className="text-[color:var(--muted)] hover:text-[color:var(--foreground)]"
               >
                 ×
