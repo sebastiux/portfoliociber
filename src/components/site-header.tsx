@@ -9,6 +9,7 @@ export async function SiteHeader() {
     { href: `/${locale}/research`, label: t("research") },
     { href: `/${locale}/detections`, label: t("detections") },
     { href: `/${locale}/scanner`, label: t("scanner") },
+    { href: `/${locale}/design`, label: t("design") },
     { href: `/${locale}/about`, label: t("about") },
   ];
 
@@ -17,13 +18,18 @@ export async function SiteHeader() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link
           href={`/${locale}`}
-          className="font-mono text-sm tracking-tight text-[color:var(--accent)] no-underline"
+          className="flex flex-col font-mono text-xs leading-tight no-underline"
         >
-          portfoliociber<span className="text-[color:var(--muted)]">/</span>
+          <span className="text-[color:var(--accent)]">carlos ortega</span>
+          <span className="text-[color:var(--muted)]">mechatronics &amp; cyber-physical systems</span>
         </Link>
         <nav className="flex items-center gap-6 text-sm">
           {items.map((it) => (
-            <Link key={it.href} href={it.href} className="text-[color:var(--foreground)] no-underline hover:text-[color:var(--accent)]">
+            <Link
+              key={it.href}
+              href={it.href}
+              className="text-[color:var(--foreground)] no-underline hover:text-[color:var(--accent)]"
+            >
               {it.label}
             </Link>
           ))}

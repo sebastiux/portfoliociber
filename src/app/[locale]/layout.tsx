@@ -10,8 +10,9 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "portfoliociber",
-  description: "Threat research, detection engineering, and a live YARA scanner.",
+  title: "Portfolio · Carlos Ortega — Mechatronics & Cyber-Physical Systems Engineer",
+  description:
+    "Threat research, detection engineering, and a live YARA scanner. Carlos Ortega, Mechatronics & Cyber-Physical Systems engineer.",
 };
 
 export function generateStaticParams() {
