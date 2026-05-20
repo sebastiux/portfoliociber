@@ -41,6 +41,29 @@ Located in `content/detections/`:
 
 Each is registered in `src/lib/detections.ts` with bilingual descriptions and MITRE ATT&CK mappings. The scanner lets you load any YARA rule as a preset.
 
+## Daily threat-intel research (Grok-powered)
+
+`/research` is populated automatically by an in-process scheduler. Once per day the app:
+
+1. Acquires a Redis distributed lock for `research:lock:YYYY-MM-DD` (so multi-replica deploys generate exactly once).
+2. Sends the current YARA + KQL registry, recent titles, and today's date to the Grok API (`https://api.x.ai/v1`).
+3. Asks for a 700–1000-word bilingual (EN / RU) brief that ties an active threat angle back to one or more deployed rules.
+4. Parses the JSON response and stores it in Redis under `research:auto:YYYY-MM-DD`.
+
+The scheduler ticks every hour but no-ops if today's report already exists. It runs only when `GROK_API_KEY` is set and `RESEARCH_AUTO_GENERATE` isn't `false`. The first tick fires 30 s after process start, so a fresh deploy on a new day produces its report shortly after boot.
+
+Env vars (see `.env.example`):
+
+| Var | Required | Default | Purpose |
+| --- | --- | --- | --- |
+| `GROK_API_KEY` | yes (to enable) | — | xAI API key |
+| `GROK_MODEL` | no | `grok-4` | model id |
+| `GROK_BASE_URL` | no | `https://api.x.ai/v1` | swap for an OpenAI-compatible gateway if needed |
+| `RESEARCH_AUTO_GENERATE` | no | `true` | set to `false` to keep the API key but pause generation |
+| `REDIS_URL` | strongly recommended | — | persistent storage; without it reports go to in-memory and are lost on restart |
+
+Generated content is rendered through `react-markdown` with `skipHtml`, so any HTML emitted by the model is treated as text — XSS surface is the same as a typical Markdown blog.
+
 ## Deploying to Railway
 
 1. Provision the Railway service backed by this repo. `railway.json` selects the `Dockerfile` builder and `/api/health` as the health-check.

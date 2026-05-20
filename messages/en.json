@@ -52,6 +52,20 @@
     "offsetLabel": "offset",
     "lengthLabel": "len"
   },
+  "research": {
+    "title": "Threat-intel research",
+    "subtitle": "Daily briefs grounded in this portfolio's YARA / KQL detection library. Each report ties an active threat angle back to one or more deployed rules.",
+    "disclaimer": "Reports are drafted automatically by an LLM (xAI Grok) anchored to the local detection registry, then reviewed before publication. Use as analyst notes, not as authoritative IOC feeds.",
+    "empty": "No reports yet. The scheduler generates one per day — check back tomorrow.",
+    "readMore": "Read",
+    "generatedBy": "model",
+    "threatActor": "Threat actor",
+    "mitre": "MITRE ATT&CK",
+    "relatedDetections": "Related detections",
+    "references": "References",
+    "tags": "Tags",
+    "backToList": "All reports"
+  },
   "detections": {
     "title": "Detection Library",
     "subtitle": "YARA rules and KQL queries mapped to MITRE ATT&CK. Copy, fork, or test against the live scanner.",
